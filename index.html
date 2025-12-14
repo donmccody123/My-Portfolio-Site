@@ -8,54 +8,51 @@
     <meta property="og:image" content="https://bolt.new/static/og_default.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
-</head>
+  </head>
   <body>
     <!-- Navbar -->
-    <nav id="navbar" class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <div class="flex-shrink-0 flex items-center gap-3">
+    <nav id="navbar" class="navbar">
+      <div class="navbar-content">
+        <div class="flex justify-between items-center" style="width: 100%;">
+          <div class="navbar-brand">
             <img 
               id="navbar-logo" 
               src="/logo.png" 
               alt="BM TECH SOLUTIONS Logo" 
-              class="h-10 w-auto"
-              onerror="this.style.display='none'; document.getElementById('navbar-logo-fallback').style.display='block';"
+              class="navbar-logo"
+              onerror="this.style.display='none'; document.getElementById('navbar-logo-fallback').style.display='flex';"
             />
             <div id="navbar-logo-fallback" class="hidden p-2 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full">
               <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
               </svg>
             </div>
-            <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            <h1 class="navbar-title">
               BM TECH SOLUTIONS
             </h1>
           </div>
 
-          <div class="hidden md:block">
-            <div class="ml-10 flex items-baseline space-x-4">
-              <button onclick="navigateTo('home')" data-nav="home" class="nav-link px-3 py-2 rounded-md text-sm font-medium transition-colors bg-blue-600 text-white">
-                Home
-              </button>
-              <button onclick="navigateTo('portfolio')" data-nav="portfolio" class="nav-link px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100">
-                Portfolio
-              </button>
-              <button onclick="navigateTo('about')" data-nav="about" class="nav-link px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100">
-                About
-              </button>
-              <button onclick="navigateTo('services')" data-nav="services" class="nav-link px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100">
-                Services
-              </button>
-              <button onclick="navigateTo('contact')" data-nav="contact" class="nav-link px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100">
-                Contact
-              </button>
-            </div>
+          <div class="navbar-nav navbar-nav-desktop">
+            <button onclick="navigateTo('home')" data-nav="home" class="nav-link active">
+              Home
+            </button>
+            <button onclick="navigateTo('portfolio')" data-nav="portfolio" class="nav-link">
+              Portfolio
+            </button>
+            <button onclick="navigateTo('about')" data-nav="about" class="nav-link">
+              About
+            </button>
+            <button onclick="navigateTo('services')" data-nav="services" class="nav-link">
+              Services
+            </button>
+            <button onclick="navigateTo('contact')" data-nav="contact" class="nav-link">
+              Contact
+            </button>
           </div>
 
-          <div class="md:hidden">
-            <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-gray-100">
+          <div class="mobile-menu-btn-container">
+            <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="mobile-menu-btn">
               <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
@@ -67,21 +64,21 @@
         </div>
       </div>
 
-      <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
-        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          <button onclick="navigateTo('home'); toggleMobileMenu();" class="mobile-nav-link block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-blue-600 text-white">
+      <div id="mobile-menu" class="mobile-menu hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <button onclick="navigateTo('home'); toggleMobileMenu();" class="mobile-nav-link active">
             Home
           </button>
-          <button onclick="navigateTo('portfolio'); toggleMobileMenu();" class="mobile-nav-link block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
+          <button onclick="navigateTo('portfolio'); toggleMobileMenu();" class="mobile-nav-link">
             Portfolio
           </button>
-          <button onclick="navigateTo('about'); toggleMobileMenu();" class="mobile-nav-link block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
+          <button onclick="navigateTo('about'); toggleMobileMenu();" class="mobile-nav-link">
             About
           </button>
-          <button onclick="navigateTo('services'); toggleMobileMenu();" class="mobile-nav-link block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
+          <button onclick="navigateTo('services'); toggleMobileMenu();" class="mobile-nav-link">
             Services
           </button>
-          <button onclick="navigateTo('contact'); toggleMobileMenu();" class="mobile-nav-link block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
+          <button onclick="navigateTo('contact'); toggleMobileMenu();" class="mobile-nav-link">
             Contact
           </button>
         </div>
@@ -91,44 +88,44 @@
     <!-- Main Content -->
     <div id="main-content" class="min-h-screen bg-white">
       <!-- Hero Section -->
-      <section id="home" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-cyan-50 pt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section id="home" class="hero">
+        <div class="hero-content">
           <div class="text-center">
-            <div class="flex justify-center mb-6">
+            <div class="hero-logo-container">
               <img 
                 id="hero-logo" 
                 src="/logo.png" 
                 alt="BM TECH SOLUTIONS Logo" 
-                class="h-24 w-auto"
+                class="hero-logo"
                 onerror="this.style.display='none'; document.getElementById('hero-logo-fallback').style.display='flex';"
               />
-              <div id="hero-logo-fallback" class="hidden p-4 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-full">
+              <div id="hero-logo-fallback" class="hero-logo-fallback hidden">
                 <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                 </svg>
               </div>
             </div>
 
-            <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6">
+            <h1 class="hero-title">
               Welcome to
-              <span class="block bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              <span class="hero-title-gradient">
                 BM TECH SOLUTIONS
               </span>
             </h1>
 
-            <p class="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p class="hero-description">
               Professional graphics design and tech solutions specializing in branding, print design, digital solutions, and software & hardware installations.
               Let's create something extraordinary together.
             </p>
 
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-              <button onclick="navigateTo('portfolio')" class="px-8 py-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg">
+            <div class="hero-buttons">
+              <button onclick="navigateTo('portfolio')" class="btn-primary">
                 View Portfolio
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </button>
-              <button onclick="navigateTo('contact')" class="px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-all transform hover:scale-105">
+              <button onclick="navigateTo('contact')" class="btn-secondary">
                 Get In Touch
               </button>
             </div>
@@ -137,23 +134,23 @@
       </section>
 
       <!-- Portfolio Section -->
-      <section id="portfolio" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+      <section id="portfolio" class="section section-white">
+        <div class="section-content">
+          <div class="section-header">
+            <h2 class="section-title">
               My Portfolio
             </h2>
-            <p class="text-xl text-gray-600">
+            <p class="section-description">
               Explore my creative work across various design disciplines
             </p>
           </div>
 
-          <div class="flex flex-wrap justify-center gap-3 mb-12" id="category-buttons">
+          <div class="portfolio-categories" id="category-buttons">
             <!-- Categories will be populated by JavaScript -->
           </div>
 
           <div id="portfolio-loading" class="text-center py-20">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div class="loading-spinner"></div>
             <p class="mt-4 text-gray-600">Loading portfolio...</p>
           </div>
 
@@ -164,99 +161,98 @@
             <p class="text-xl text-gray-600">No items in this category yet</p>
           </div>
 
-          <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div id="portfolio-grid" class="portfolio-grid">
             <!-- Portfolio items will be populated by JavaScript -->
           </div>
         </div>
       </section>
 
       <!-- Portfolio Modal -->
-      <div id="portfolio-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4" onclick="closePortfolioModal()">
-        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-auto" onclick="event.stopPropagation()">
+      <div id="portfolio-modal" class="portfolio-modal hidden" onclick="closePortfolioModal()">
+        <div class="portfolio-modal-content" onclick="event.stopPropagation()">
           <div class="relative">
-            <img id="modal-image" src="" alt="" class="hidden w-full max-h-[60vh] object-contain">
-            <video id="modal-video" src="" controls class="hidden w-full max-h-[60vh]"></video>
+            <img id="modal-image" src="" alt="" class="portfolio-modal-image hidden">
+            <video id="modal-video" src="" controls class="portfolio-modal-video hidden"></video>
           </div>
-          <div class="p-6">
-            <div class="flex items-center justify-between mb-4">
-              <h3 id="modal-title" class="text-2xl font-bold text-gray-900"></h3>
-              <span id="modal-category" class="px-3 py-1 bg-blue-600 text-white text-sm font-semibold rounded-full"></span>
+          <div class="portfolio-modal-body">
+            <div class="portfolio-modal-header">
+              <h3 id="modal-title" class="portfolio-modal-title"></h3>
+              <span id="modal-category" class="portfolio-modal-category"></span>
             </div>
-            <p id="modal-description" class="text-gray-600"></p>
+            <p id="modal-description" class="portfolio-modal-description"></p>
           </div>
         </div>
       </div>
 
       <!-- About Section -->
-      <section id="about" class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+      <section id="about" class="section section-gradient">
+        <div class="section-content">
+          <div class="section-header">
+            <h2 class="section-title">
               About Me
             </h2>
-            <p class="text-xl text-gray-600">
+            <p class="section-description">
               Creating meaningful designs that make an impact
             </p>
           </div>
 
-          <div class="grid md:grid-cols-2 gap-12 items-stretch mb-16">
-            <div class="relative flex items-center justify-center">
+          <div class="about-grid">
+            <div class="about-image-container">
               <img
                 src="/fullpic.png"
                 alt="BRIGHT BORTEI BORKETEY"
-                class="h-full w-auto object-contain"
+                class="about-image"
               />
-              <div class="absolute -bottom-6 -right-6 w-48 h-48 rounded-xl overflow-hidden shadow-xl border-4 border-white bg-white">
+              <div class="about-headshot">
                 <img
                   src="/hdshot.png"
                   alt="BRIGHT BORTEI BORKETEY Headshot"
-                  class="w-full h-full object-cover"
                 />
               </div>
             </div>
 
-            <div class="space-y-6">
-              <h3 class="text-3xl font-bold text-gray-900">
+            <div class="about-content">
+              <h3 class="about-title">
                 Hi, I'm BRIGHT BORTEI BORKETEY
               </h3>
-              <p class="text-lg text-gray-600 leading-relaxed">
+              <p class="about-text">
                 Founder and Creative Director of <strong>BM TECH SOLUTIONS</strong>. With years of experience in the design and technology industry, I specialize in transforming ideas
                 into stunning visual experiences and technical solutions. My passion lies in creating designs that not only
                 look beautiful but also communicate effectively and drive results.
               </p>
-              <p class="text-lg text-gray-600 leading-relaxed">
+              <p class="about-text">
                 From brand identity to print materials, software installations to hardware setup, I bring creativity, precision, and strategic
                 thinking to every project. I believe that great design and technology solutions are about solving problems and
                 creating connections between brands and their audiences.
               </p>
 
-              <div class="grid grid-cols-3 gap-4 pt-6">
-                <div class="text-center">
-                  <div class="bg-blue-600 rounded-lg p-4 mb-2 inline-block">
+              <div class="about-stats">
+                <div class="about-stat">
+                  <div class="about-stat-icon about-stat-icon-blue">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                     </svg>
                   </div>
-                  <p class="font-bold text-2xl text-gray-900">100+</p>
-                  <p class="text-sm text-gray-600">Projects</p>
+                  <p class="about-stat-number">100+</p>
+                  <p class="about-stat-label">Projects</p>
                 </div>
-                <div class="text-center">
-                  <div class="bg-cyan-600 rounded-lg p-4 mb-2 inline-block">
+                <div class="about-stat">
+                  <div class="about-stat-icon about-stat-icon-cyan">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                   </div>
-                  <p class="font-bold text-2xl text-gray-900">50+</p>
-                  <p class="text-sm text-gray-600">Happy Clients</p>
+                  <p class="about-stat-number">50+</p>
+                  <p class="about-stat-label">Happy Clients</p>
                 </div>
-                <div class="text-center">
-                  <div class="bg-blue-500 rounded-lg p-4 mb-2 inline-block">
+                <div class="about-stat">
+                  <div class="about-stat-icon about-stat-icon-blue-light">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                   </div>
-                  <p class="font-bold text-2xl text-gray-900">5+</p>
-                  <p class="text-sm text-gray-600">Years Experience</p>
+                  <p class="about-stat-number">5+</p>
+                  <p class="about-stat-label">Years Experience</p>
                 </div>
               </div>
             </div>
@@ -265,47 +261,47 @@
       </section>
 
       <!-- Services Section -->
-      <section id="services" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+      <section id="services" class="section section-white">
+        <div class="section-content">
+          <div class="section-header">
+            <h2 class="section-title">
               Services I Offer
             </h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p class="section-description" style="max-width: 48rem; margin: 0 auto;">
               From concept to execution, I provide comprehensive design and technical services
               to bring your vision to life
             </p>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="services-grid">
+          <div class="services-grid" id="services-grid">
             <!-- Services will be populated by JavaScript -->
           </div>
         </div>
       </section>
 
       <!-- Contact Section -->
-      <section id="contact" class="py-20 bg-gradient-to-br from-blue-600 to-cyan-600">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">
+      <section id="contact" class="section section-blue">
+        <div class="section-content">
+          <div class="section-header">
+            <h2 class="section-title-white">
               Let's Connect
             </h2>
-            <p class="text-xl text-blue-100">
+            <p class="section-description-white">
               Follow me on social media to stay updated with my latest work
             </p>
           </div>
 
-          <div class="flex flex-wrap justify-center gap-6">
+          <div class="contact-social">
             <a
               href="https://www.linkedin.com/in/bright-borketey/"
               target="_blank"
               rel="noopener noreferrer"
-              class="group bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 flex flex-col items-center gap-4 min-w-[200px]"
+              class="social-card"
             >
-              <img src="/Icons/in.png" alt="LinkedIn" class="w-16 h-16 object-contain group-hover:scale-110 transition-transform" />
+              <img src="/Icons/in.png" alt="LinkedIn" />
               <div class="text-center">
-                <p class="font-bold text-gray-900">LinkedIn</p>
-                <p class="text-sm text-gray-600">Connect with me</p>
+                <p class="social-card-title">LinkedIn</p>
+                <p class="social-card-subtitle">Connect with me</p>
               </div>
             </a>
 
@@ -313,12 +309,12 @@
               href="https://www.instagram.com/don.mccody/"
               target="_blank"
               rel="noopener noreferrer"
-              class="group bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 flex flex-col items-center gap-4 min-w-[200px]"
+              class="social-card"
             >
-              <img src="/Icons/ig.png" alt="Instagram" class="w-16 h-16 object-contain group-hover:scale-110 transition-transform" />
+              <img src="/Icons/ig.png" alt="Instagram" />
               <div class="text-center">
-                <p class="font-bold text-gray-900">Instagram</p>
-                <p class="text-sm text-gray-600">View my work</p>
+                <p class="social-card-title">Instagram</p>
+                <p class="social-card-subtitle">View my work</p>
               </div>
             </a>
 
@@ -326,12 +322,12 @@
               href="https://x.com/BrightMccody"
               target="_blank"
               rel="noopener noreferrer"
-              class="group bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 flex flex-col items-center gap-4 min-w-[200px]"
+              class="social-card"
             >
-              <img src="/Icons/x.png" alt="X (Twitter)" class="w-16 h-16 object-contain group-hover:scale-110 transition-transform" />
+              <img src="/Icons/x.png" alt="X (Twitter)" />
               <div class="text-center">
-                <p class="font-bold text-gray-900">X (Twitter)</p>
-                <p class="text-sm text-gray-600">Follow updates</p>
+                <p class="social-card-title">X (Twitter)</p>
+                <p class="social-card-subtitle">Follow updates</p>
               </div>
             </a>
 
@@ -339,12 +335,12 @@
               href="https://www.tiktok.com/@bm_tech_solutions"
               target="_blank"
               rel="noopener noreferrer"
-              class="group bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 flex flex-col items-center gap-4 min-w-[200px]"
+              class="social-card"
             >
-              <img src="/Icons/tk.png" alt="TikTok" class="w-16 h-16 object-contain group-hover:scale-110 transition-transform" />
+              <img src="/Icons/tk.png" alt="TikTok" />
               <div class="text-center">
-                <p class="font-bold text-gray-900">TikTok</p>
-                <p class="text-sm text-gray-600">Watch videos</p>
+                <p class="social-card-title">TikTok</p>
+                <p class="social-card-subtitle">Watch videos</p>
               </div>
             </a>
 
@@ -352,23 +348,23 @@
               href="https://wa.me/233541574050"
               target="_blank"
               rel="noopener noreferrer"
-              class="group bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 flex flex-col items-center gap-4 min-w-[200px]"
+              class="social-card"
             >
-              <img src="/Icons/wp.png" alt="WhatsApp" class="w-16 h-16 object-contain group-hover:scale-110 transition-transform" />
+              <img src="/Icons/wp.png" alt="WhatsApp" />
               <div class="text-center">
-                <p class="font-bold text-gray-900">WhatsApp</p>
-                <p class="text-sm text-gray-600">Chat with me</p>
+                <p class="social-card-title">WhatsApp</p>
+                <p class="social-card-subtitle">Chat with me</p>
               </div>
             </a>
           </div>
 
-          <div class="text-center mt-16">
-            <p class="text-blue-100 text-lg">
+          <div class="contact-cta">
+            <p class="contact-cta-text">
               Ready to start a project?
             </p>
             <a
               href="mailto:donmccody123@gmail.com"
-              class="inline-block mt-4 px-8 py-4 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg"
+              class="btn-email"
             >
               Send me an Email
             </a>
@@ -377,74 +373,72 @@
       </section>
 
       <!-- Footer -->
-      <footer class="bg-gray-900 text-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center">
-            <p class="text-gray-400">
-              © <span id="current-year"></span> BM TECH SOLUTIONS. All rights reserved.
-            </p>
-            <button
-              onclick="showAdmin()"
-              class="mt-4 text-gray-500 hover:text-gray-400 text-sm"
-            >
-              Admin
-            </button>
-          </div>
+      <footer class="footer">
+        <div class="footer-content">
+          <p class="footer-text">
+            © <span id="current-year"></span> BM TECH SOLUTIONS. All rights reserved.
+          </p>
+          <button
+            onclick="showAdmin()"
+            class="footer-admin-btn"
+          >
+            Admin
+          </button>
         </div>
       </footer>
     </div>
 
     <!-- Admin Login Page (hidden by default) -->
-    <div id="login-page" class="hidden min-h-screen bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center px-4">
-      <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-        <div class="text-center mb-8">
-          <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-full mb-4">
+    <div id="login-page" class="login-page hidden">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="login-icon">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 class="text-3xl font-bold text-gray-900">Admin Login</h2>
-          <p class="text-gray-600 mt-2">Sign in to manage your portfolio</p>
+          <h2 class="login-title">Admin Login</h2>
+          <p class="login-subtitle">Sign in to manage your portfolio</p>
         </div>
 
-        <div id="login-error" class="hidden mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
+        <div id="login-error" class="login-error hidden">
           <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p class="text-red-800 text-sm" id="login-error-text"></p>
+          <p class="login-error-text" id="login-error-text"></p>
         </div>
 
-        <form id="login-form" onsubmit="handleLogin(event)" class="space-y-6">
-          <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+        <form id="login-form" onsubmit="handleLogin(event)" class="login-form">
+          <div class="form-group">
+            <label for="email" class="form-label">
               Email Address
             </label>
-            <div class="relative">
-              <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="form-input-wrapper">
+              <svg class="form-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
               <input
                 type="email"
                 id="email"
-                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                class="form-input"
                 placeholder="admin@example.com"
                 required
               />
             </div>
           </div>
 
-          <div>
-            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+          <div class="form-group">
+            <label for="password" class="form-label">
               Password
             </label>
-            <div class="relative">
-              <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="form-input-wrapper">
+              <svg class="form-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
               <input
                 type="password"
                 id="password"
-                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                class="form-input"
                 placeholder="Enter your password"
                 required
               />
@@ -454,7 +448,7 @@
           <button
             type="submit"
             id="login-submit"
-            class="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-cyan-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            class="btn-login"
           >
             Sign In
           </button>
