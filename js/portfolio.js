@@ -146,22 +146,57 @@ export function openPortfolioModal(item) {
   const modalTitle = document.getElementById('modal-title');
   const modalCategory = document.getElementById('modal-category');
   const modalDescription = document.getElementById('modal-description');
+  const modalThumbs = document.getElementById('modal-thumbs');
 
   modalTitle.textContent = item.title;
   modalCategory.textContent = item.category;
   modalDescription.textContent = item.description;
 
-  if (item.media_type === 'image') {
-    modalImage.src = item.media_url;
-    modalImage.alt = item.title;
-    modalImage.classList.remove('hidden');
-    modalVideo.classList.add('hidden');
-  } else {
-    modalVideo.src = item.media_url;
-    modalVideo.classList.remove('hidden');
-    modalImage.classList.add('hidden');
+  const gallery = Array.isArray(item.media_gallery) && item.media_gallery.length
+    ? item.media_gallery
+    : [{ url: item.media_url, type: item.media_type }];
+
+  function setActiveMedia(index) {
+    const media = gallery[index];
+    if (!media) return;
+    if (media.type === 'image') {
+      modalImage.src = media.url;
+      modalImage.alt = item.title;
+      modalImage.classList.remove('hidden');
+      modalVideo.classList.add('hidden');
+      modalVideo.pause();
+    } else {
+      modalVideo.src = media.url;
+      modalVideo.classList.remove('hidden');
+      modalImage.classList.add('hidden');
+    }
+
+    // highlight active thumb
+    const thumbNodes = modalThumbs.querySelectorAll('.modal-thumb');
+    thumbNodes.forEach((node, idx) => {
+      if (idx === index) node.classList.add('active');
+      else node.classList.remove('active');
+    });
   }
 
+  // Build thumbnails
+  if (gallery.length > 1) {
+    modalThumbs.classList.remove('hidden');
+    modalThumbs.innerHTML = gallery.map((media, idx) => `
+      <button class="modal-thumb ${idx === 0 ? 'active' : ''}" data-idx="${idx}" onclick="event.stopPropagation(); window.setModalMedia(${idx})">
+        ${media.type === 'image'
+          ? `<img src="${media.url}" alt="${item.title} thumb ${idx + 1}" />`
+          : `<video src="${media.url}"></video>`}
+      </button>
+    `).join('');
+  } else {
+    modalThumbs.classList.add('hidden');
+    modalThumbs.innerHTML = '';
+  }
+
+  window.setModalMedia = (idx) => setActiveMedia(idx);
+
+  setActiveMedia(0);
   modal.classList.remove('hidden');
 }
 

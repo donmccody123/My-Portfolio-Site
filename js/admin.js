@@ -99,13 +99,14 @@ function renderAdminDashboard() {
           </div>
 
           <div class="form-group">
-            <label class="form-label">
-              Upload File (Image or Video)
-            </label>
+              <label class="form-label">
+                Upload Files (Images or Videos)
+              </label>
             <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-600 transition-colors">
               <input
                 type="file"
                 id="admin-file"
+                multiple
                 onchange="handleAdminFileChange(event)"
                 accept="image/*,video/*"
                 class="hidden"
@@ -115,10 +116,10 @@ function renderAdminDashboard() {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
                 <p class="text-gray-600" id="admin-file-name">
-                  Click to upload or drag and drop
+                  Click to upload or drag and drop (multiple allowed)
                 </p>
                 <p class="text-sm text-gray-500 mt-1">
-                  Images and videos up to 50MB
+                  Images and videos up to 50MB each
                 </p>
               </label>
             </div>
@@ -235,6 +236,9 @@ function renderAdminItems() {
         ` : `
           <video src="${item.media_url}" class="w-full h-full object-cover"></video>
         `}
+        ${Array.isArray(item.media_gallery) && item.media_gallery.length > 1 ? `
+          <span class="gallery-pill">${item.media_gallery.length} files</span>
+        ` : ''}
         ${item.is_featured ? `
           <span class="absolute top-2 right-2 px-2 py-1 bg-yellow-400 text-yellow-900 text-xs font-semibold rounded">
             Featured
@@ -275,31 +279,34 @@ export async function handleAdminSubmit(event) {
   const fileInput = document.getElementById('admin-file');
   const submitBtn = document.getElementById('admin-submit');
 
-  if (!fileInput.files || !fileInput.files[0]) {
-    showMessage('error', 'Please select a file');
+  if (!fileInput.files || fileInput.files.length === 0) {
+    showMessage('error', 'Please select at least one file');
     return;
   }
 
-  const file = fileInput.files[0];
+  const files = Array.from(fileInput.files);
   submitBtn.disabled = true;
   submitBtn.textContent = 'Uploading...';
 
   try {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-    const filePath = `${fileName}`;
+    // Upload all files sequentially (simpler error handling)
+    const uploads = [];
+    for (const file of files) {
+      const ext = file.name.split('.').pop();
+      const name = `${Math.random().toString(36).substring(2)}-${Date.now()}.${ext}`;
+      const path = `${name}`;
+      const { error: uploadError } = await supabase.storage
+        .from('portfolio-media')
+        .upload(path, file);
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage
+        .from('portfolio-media')
+        .getPublicUrl(path);
+      uploads.push({ url: publicUrl, type: file.type.startsWith('video/') ? 'video' : 'image', path });
+    }
 
-    const { error: uploadError } = await supabase.storage
-      .from('portfolio-media')
-      .upload(filePath, file);
-
-    if (uploadError) throw uploadError;
-
-    const { data: { publicUrl } } = supabase.storage
-      .from('portfolio-media')
-      .getPublicUrl(filePath);
-
-    const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+    const primary = uploads[0];
+    const gallery = uploads.map(u => ({ url: u.url, type: u.type, path: u.path }));
 
     const { error: dbError } = await supabase
       .from('portfolio_items')
@@ -308,8 +315,9 @@ export async function handleAdminSubmit(event) {
           title,
           description,
           category,
-          media_url: publicUrl,
-          media_type: mediaType,
+          media_url: primary.url,
+          media_type: primary.type,
+          media_gallery: gallery,
           is_featured: isFeatured,
         },
       ]);
@@ -324,7 +332,7 @@ export async function handleAdminSubmit(event) {
     document.getElementById('admin-category').value = 'Flyers';
     document.getElementById('admin-featured').checked = false;
     fileInput.value = '';
-    document.getElementById('admin-file-name').textContent = 'Click to upload or drag and drop';
+    document.getElementById('admin-file-name').textContent = 'Click to upload or drag and drop (multiple allowed)';
     toggleAdminForm();
     
     await fetchItems();
@@ -343,9 +351,10 @@ export function handleAdminFileChange(event) {
   const file = event.target.files[0];
   const fileName = document.getElementById('admin-file-name');
   if (file) {
-    fileName.textContent = file.name;
+    const count = event.target.files.length;
+    fileName.textContent = count === 1 ? file.name : `${file.name} (+${count - 1} more)`;
   } else {
-    fileName.textContent = 'Click to upload or drag and drop';
+    fileName.textContent = 'Click to upload or drag and drop (multiple allowed)';
   }
 }
 
@@ -354,9 +363,22 @@ export async function handleAdminDelete(id, mediaUrl) {
   if (!confirm('Are you sure you want to delete this item?')) return;
 
   try {
-    const filePath = mediaUrl.split('/').pop();
-    if (filePath) {
-      await supabase.storage.from('portfolio-media').remove([filePath]);
+    const targetItem = items.find(i => i.id === id);
+
+    // Collect all file paths to remove (primary + gallery)
+    const paths = [];
+    const primaryPath = mediaUrl.split('/').pop();
+    if (primaryPath) paths.push(primaryPath);
+    if (targetItem && Array.isArray(targetItem.media_gallery)) {
+      targetItem.media_gallery.forEach(entry => {
+        const p = entry?.url?.split('/').pop();
+        if (p) paths.push(p);
+      });
+    }
+
+    const uniquePaths = [...new Set(paths)];
+    if (uniquePaths.length > 0) {
+      await supabase.storage.from('portfolio-media').remove(uniquePaths);
     }
 
     const { error } = await supabase
