@@ -1007,42 +1007,105 @@ section {
   background-color: #f3f4f6;
 }
 
-.mobile-menu {
+/* Mobile Overlay */
+.mobile-overlay {
   display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 39;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-overlay:not(.hidden) {
+  display: block;
+}
+
+/* Mobile Sidebar */
+.mobile-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 75vw;
+  max-width: 300px;
   background-color: #ffffff;
-  border-top-width: 1px;
-  border-top-color: #e5e7eb;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+  z-index: 40;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.mobile-sidebar:not(.hidden) {
+  transform: translateX(0);
+}
+
+.mobile-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mobile-sidebar-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1f2937;
+}
+
+.mobile-sidebar-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #374151;
+  transition: all 0.2s ease;
+}
+
+.mobile-sidebar-close:hover {
+  color: #2563eb;
+  transform: rotate(90deg);
+}
+
+.mobile-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
 }
 
 .mobile-nav-link {
   display: block;
   width: 100%;
   text-align: left;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem;
+  padding: 1rem 1.5rem;
   font-size: 1rem;
   font-weight: 500;
   background: none;
   border: none;
   cursor: pointer;
+  color: #374151;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
 }
 
 .mobile-nav-link.active {
-  background-color: #2563eb;
-  color: #ffffff;
-}
-
-.mobile-nav-link:not(.active) {
-  color: #374151;
+  background-color: #eff6ff;
+  color: #2563eb;
+  border-left-color: #2563eb;
 }
 
 .mobile-nav-link:not(.active):hover {
-  background-color: #f3f4f6;
-  transform: translateX(5px);
-}
-
-.mobile-nav-link {
-  transition: all 0.3s ease;
+  background-color: #f9fafb;
+  padding-left: 1.75rem;
 }
 
 /* Hero Section */

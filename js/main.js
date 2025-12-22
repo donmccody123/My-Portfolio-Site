@@ -28,17 +28,26 @@ function navigateTo(section) {
 // Toggle mobile menu
 function toggleMobileMenu() {
   const mobileMenu = document.getElementById('mobile-menu');
+  const mobileOverlay = document.getElementById('mobile-overlay');
   const menuIcon = document.getElementById('menu-icon');
   const closeIcon = document.getElementById('close-icon');
   
   if (mobileMenu.classList.contains('hidden')) {
+    // Open sidebar
     mobileMenu.classList.remove('hidden');
+    mobileOverlay.classList.remove('hidden');
     menuIcon.classList.add('hidden');
     closeIcon.classList.remove('hidden');
+    // Prevent body scroll when sidebar is open
+    document.body.style.overflow = 'hidden';
   } else {
+    // Close sidebar
     mobileMenu.classList.add('hidden');
+    mobileOverlay.classList.add('hidden');
     menuIcon.classList.remove('hidden');
     closeIcon.classList.add('hidden');
+    // Restore body scroll
+    document.body.style.overflow = 'auto';
   }
 }
 
