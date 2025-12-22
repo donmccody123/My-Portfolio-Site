@@ -1035,22 +1035,23 @@ section {
   display: block;
   width: 100%;
   text-align: left;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem;
-  font-size: 1rem;
-  font-weight: 500;
-  background: none;
+  padding: 0.55rem;
+  border-radius: 0.5rem;
+  color: #111827;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
   border: none;
   cursor: pointer;
 }
 
-.mobile-nav-link.active {
+  background-color: #eef2f7;
   background-color: #2563eb;
   color: #ffffff;
 .mobile-menu-btn .menu-icon-svg,
 .mobile-menu-btn .w-6 {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   stroke: currentColor;
 }
 .mobile-nav-link:not(.active):hover {
