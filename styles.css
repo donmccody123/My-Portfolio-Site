@@ -1006,6 +1006,13 @@ section {
 .mobile-menu-btn svg {
   color: #1f2937;
   stroke: currentColor;
+
+.mobile-menu-btn .menu-icon-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+}
 }
 
 .mobile-menu-btn:hover {
