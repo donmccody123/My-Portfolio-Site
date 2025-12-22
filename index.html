@@ -64,39 +64,26 @@
         </div>
       </div>
 
-    </nav>
-
-    <!-- Mobile Sidebar Overlay -->
-    <div id="mobile-overlay" class="mobile-overlay hidden" onclick="toggleMobileMenu()"></div>
-
-    <!-- Mobile Sidebar -->
-    <aside id="mobile-menu" class="mobile-sidebar hidden">
-      <div class="mobile-sidebar-header">
-        <h2>Menu</h2>
-        <button onclick="toggleMobileMenu()" class="mobile-sidebar-close">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+      <div id="mobile-menu" class="mobile-menu hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <button onclick="navigateTo('home'); toggleMobileMenu();" class="mobile-nav-link active">
+            Home
+          </button>
+          <button onclick="navigateTo('portfolio'); toggleMobileMenu();" class="mobile-nav-link">
+            Portfolio
+          </button>
+          <button onclick="navigateTo('about'); toggleMobileMenu();" class="mobile-nav-link">
+            About
+          </button>
+          <button onclick="navigateTo('services'); toggleMobileMenu();" class="mobile-nav-link">
+            Services
+          </button>
+          <button onclick="navigateTo('contact'); toggleMobileMenu();" class="mobile-nav-link">
+            Contact
+          </button>
+        </div>
       </div>
-      <nav class="mobile-sidebar-nav">
-        <button onclick="navigateTo('home'); toggleMobileMenu();" data-nav="home" class="mobile-nav-link active">
-          Home
-        </button>
-        <button onclick="navigateTo('portfolio'); toggleMobileMenu();" data-nav="portfolio" class="mobile-nav-link">
-          Portfolio
-        </button>
-        <button onclick="navigateTo('about'); toggleMobileMenu();" data-nav="about" class="mobile-nav-link">
-          About
-        </button>
-        <button onclick="navigateTo('services'); toggleMobileMenu();" data-nav="services" class="mobile-nav-link">
-          Services
-        </button>
-        <button onclick="navigateTo('contact'); toggleMobileMenu();" data-nav="contact" class="mobile-nav-link">
-          Contact
-        </button>
-      </nav>
-    </aside>
+    </nav>
 
     <!-- Main Content -->
     <div id="main-content" class="min-h-screen bg-white">
