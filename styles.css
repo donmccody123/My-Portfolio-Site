@@ -1047,12 +1047,12 @@ section {
 .mobile-nav-link.active {
   background-color: #2563eb;
   color: #ffffff;
+.mobile-menu-btn .menu-icon-svg,
+.mobile-menu-btn .w-6 {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
 }
-
-.mobile-nav-link:not(.active) {
-  color: #374151;
-}
-
 .mobile-nav-link:not(.active):hover {
   background-color: #f3f4f6;
   transform: translateX(5px);
