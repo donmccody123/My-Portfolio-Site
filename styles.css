@@ -1071,9 +1071,11 @@ section {
   cursor: pointer;
 }
 
-  background-color: #eef2f7;
+.mobile-nav-link.active {
   background-color: #2563eb;
   color: #ffffff;
+}
+
 .mobile-menu-btn .menu-icon-svg,
 .mobile-menu-btn .w-6 {
   width: 26px;
