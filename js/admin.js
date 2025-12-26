@@ -6,6 +6,8 @@ import { refreshPortfolio } from './portfolio.js';
 let items = [];
 let showForm = false;
 let editingItemId = null;
+let selectedFiles = [];
+let dragSrcIndex = null;
 
 // Initialize admin dashboard
 export function initAdmin() {
@@ -347,11 +349,10 @@ export async function handleAdminSubmit(event) {
         is_featured: isFeatured,
       };
 
-      if (fileInput.files && fileInput.files.length > 0) {
+      if (selectedFiles && selectedFiles.length > 0) {
         // Upload new files and replace media
         const uploads = [];
-        const files = Array.from(fileInput.files);
-        for (const file of files) {
+        for (const file of selectedFiles) {
           const ext = file.name.split('.').pop();
           const name = `${Math.random().toString(36).substring(2)}-${Date.now()}.${ext}`;
           const path = `${name}`;
@@ -413,12 +414,12 @@ export async function handleAdminSubmit(event) {
     }
   } else {
     // Create new item
-    if (!fileInput.files || fileInput.files.length === 0) {
+    if (!selectedFiles || selectedFiles.length === 0) {
       showMessage('error', 'Please select at least one file');
       return;
     }
 
-    const files = Array.from(fileInput.files);
+    const files = selectedFiles;
     submitBtn.disabled = true;
     submitBtn.textContent = 'Uploading...';
 
@@ -495,6 +496,7 @@ function resetAdminForm() {
   const preview = document.getElementById('admin-media-preview');
   if (preview) preview.innerHTML = '';
   
+  selectedFiles = [];
   editingItemId = null;
 }
 
@@ -519,32 +521,107 @@ function renderAdminPreviewFromItem(item) {
 
 // Handle admin file change
 export function handleAdminFileChange(event) {
-  const files = Array.from(event.target.files || []);
+  selectedFiles = Array.from(event.target.files || []);
+  renderSelectedPreviews();
+}
+
+function renderSelectedPreviews() {
   const fileName = document.getElementById('admin-file-name');
   const preview = document.getElementById('admin-media-preview');
+  const fileInput = document.getElementById('admin-file');
 
-  if (files.length > 0) {
-    fileName.textContent = files.length === 1 ? files[0].name : `${files[0].name} (+${files.length - 1} more)`;
+  if (!preview || !fileInput) return;
 
-    // Render previews using object URLs
-    const html = files.map((file) => {
+  if (selectedFiles.length > 0) {
+    fileName.textContent = selectedFiles.length === 1 ? selectedFiles[0].name : `${selectedFiles[0].name} (+${selectedFiles.length - 1} more)`;
+
+    const html = selectedFiles.map((file, idx) => {
       const url = URL.createObjectURL(file);
       const isVideo = file.type.startsWith('video/');
       return `
-        <div class="preview-item">
+        <div class="preview-item" draggable="true"
+             ondragstart="window.handlePreviewDragStart(event, ${idx})"
+             ondragover="window.handlePreviewDragOver(event, ${idx})"
+             ondragleave="window.handlePreviewDragLeave(event, ${idx})"
+             ondrop="window.handlePreviewDrop(event, ${idx})"
+             ondragend="window.handlePreviewDragEnd(event)">
           ${isVideo
             ? `<video src="${url}" class="preview-video" controls muted></video>`
             : `<img src="${url}" class="preview-image" alt="Selected media preview" />`
           }
+          <div class="preview-actions">
+            <button class="preview-btn" title="Move up" onclick="event.stopPropagation(); window.moveSelectedFile(${idx}, -1)">▲</button>
+            <button class="preview-btn" title="Move down" onclick="event.stopPropagation(); window.moveSelectedFile(${idx}, 1)">▼</button>
+            <button class="preview-btn danger" title="Remove" onclick="event.stopPropagation(); window.removeSelectedFile(${idx})">✕</button>
+          </div>
           <span class="preview-type">${isVideo ? 'Video' : 'Image'}</span>
         </div>
       `;
     }).join('');
     preview.innerHTML = html;
+
+    const dt = new DataTransfer();
+    selectedFiles.forEach(f => dt.items.add(f));
+    fileInput.files = dt.files;
   } else {
     fileName.textContent = 'Click to upload or drag and drop (multiple allowed)';
-    if (preview) preview.innerHTML = '';
+    preview.innerHTML = '';
+    const dt = new DataTransfer();
+    fileInput.files = dt.files;
   }
+}
+
+function removeSelectedFile(index) {
+  selectedFiles.splice(index, 1);
+  renderSelectedPreviews();
+}
+
+function moveSelectedFile(index, delta) {
+  const newIndex = index + delta;
+  if (newIndex < 0 || newIndex >= selectedFiles.length) return;
+  const [file] = selectedFiles.splice(index, 1);
+  selectedFiles.splice(newIndex, 0, file);
+  renderSelectedPreviews();
+}
+
+function handlePreviewDragStart(e, index) {
+  dragSrcIndex = index;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', String(index));
+  const el = e.currentTarget;
+  if (el) el.classList.add('dragging');
+}
+
+function handlePreviewDragOver(e, index) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const el = e.currentTarget;
+  if (el) el.classList.add('drag-over');
+}
+
+function handlePreviewDragLeave(e) {
+  const el = e.currentTarget;
+  if (el) el.classList.remove('drag-over');
+}
+
+function handlePreviewDrop(e, targetIndex) {
+  e.preventDefault();
+  const el = e.currentTarget;
+  if (el) el.classList.remove('drag-over');
+
+  const srcIndexStr = e.dataTransfer.getData('text/plain');
+  const srcIndex = dragSrcIndex != null ? dragSrcIndex : (srcIndexStr ? parseInt(srcIndexStr, 10) : null);
+  dragSrcIndex = null;
+  if (srcIndex == null || srcIndex === targetIndex) return;
+
+  const [file] = selectedFiles.splice(srcIndex, 1);
+  selectedFiles.splice(targetIndex, 0, file);
+  renderSelectedPreviews();
+}
+
+function handlePreviewDragEnd(e) {
+  const el = e.currentTarget;
+  if (el) el.classList.remove('dragging');
 }
 
 // Handle admin delete
@@ -648,4 +725,11 @@ window.handleAdminDelete = handleAdminDelete;
 window.handleAdminEdit = handleAdminEdit;
 window.toggleAdminForm = toggleAdminForm;
 window.handleSignOut = handleSignOut;
+window.removeSelectedFile = removeSelectedFile;
+window.moveSelectedFile = moveSelectedFile;
+window.handlePreviewDragStart = handlePreviewDragStart;
+window.handlePreviewDragOver = handlePreviewDragOver;
+window.handlePreviewDragLeave = handlePreviewDragLeave;
+window.handlePreviewDrop = handlePreviewDrop;
+window.handlePreviewDragEnd = handlePreviewDragEnd;
 

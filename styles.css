@@ -2484,6 +2484,7 @@ html.dark .social-card {
   border-radius: 0.5rem;
   overflow: hidden;
   background: #ffffff;
+  cursor: grab;
 }
 
 html.dark .preview-item {
@@ -2508,6 +2509,14 @@ html.dark .preview-item {
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
 }
+/* Dragging styles */
+.preview-item.dragging {
+  opacity: 0.85;
+  cursor: grabbing;
+}
+.preview-item.drag-over {
+  outline: 2px dashed #94a3b8;
+}
   .section-content {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
@@ -2522,6 +2531,34 @@ html.dark .preview-item {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
   }
+/* Admin preview actions */
+.preview-actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 6px;
+}
+.preview-btn {
+  padding: 4px 6px;
+  font-size: 12px;
+  line-height: 1;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 4px;
+  background: var(--button-bg, #fff);
+  color: var(--text-color, #111827);
+  cursor: pointer;
+}
+.preview-btn:hover {
+  background: var(--hover-bg, #f3f4f6);
+}
+.preview-btn.danger {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+.preview-btn.danger:hover {
+  background: #fee2e2;
+}
   
   .hero-buttons {
     flex-direction: row;
