@@ -59,6 +59,9 @@ function togglePortfolioExpand() {
   }
 }
 
+// Expose to global scope for HTML onclick
+window.togglePortfolioExpand = togglePortfolioExpand;
+
 // Show admin page
 function showAdminPage() {
   showAdmin = true;
