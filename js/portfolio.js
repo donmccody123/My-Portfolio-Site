@@ -11,6 +11,7 @@ const categories = [
   'Branding',
   'Printing',
   'Installations',
+  'Case Studies',
 ];
 
 let allItems = [];

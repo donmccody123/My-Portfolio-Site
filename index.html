@@ -49,9 +49,25 @@
             <button onclick="navigateTo('contact')" data-nav="contact" class="nav-link">
               Contact
             </button>
+            <button id="theme-toggle-btn" onclick="toggleTheme()" class="theme-toggle-btn" aria-label="Toggle dark mode">
+              <svg id="sun-icon" class="theme-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1m-16 0H1m15.364 1.636l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <svg id="moon-icon" class="theme-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </button>
           </div>
 
           <div class="mobile-menu-btn-container">
+            <button id="mobile-theme-toggle-btn" onclick="toggleTheme()" class="mobile-theme-toggle-btn" aria-label="Toggle dark mode">
+              <svg id="mobile-sun-icon" class="theme-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1m-16 0H1m15.364 1.636l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <svg id="mobile-moon-icon" class="theme-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </button>
             <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="mobile-menu-btn" aria-label="Toggle navigation">
               <svg id="menu-icon" class="menu-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />

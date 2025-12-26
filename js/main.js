@@ -70,6 +70,60 @@ function togglePortfolioExpand() {
 // Expose to global scope for HTML onclick
 window.togglePortfolioExpand = togglePortfolioExpand;
 
+// Toggle dark/light theme
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.classList.contains('dark');
+  
+  if (isDark) {
+    html.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
+    updateThemeIcons('light');
+  } else {
+    html.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
+    updateThemeIcons('dark');
+  }
+}
+
+// Update theme icons
+function updateThemeIcons(theme) {
+  const sunIcon = document.getElementById('sun-icon');
+  const moonIcon = document.getElementById('moon-icon');
+  const mobileSunIcon = document.getElementById('mobile-sun-icon');
+  const mobileMoonIcon = document.getElementById('mobile-moon-icon');
+  
+  if (theme === 'dark') {
+    sunIcon?.classList.add('hidden');
+    moonIcon?.classList.remove('hidden');
+    mobileSunIcon?.classList.add('hidden');
+    mobileMoonIcon?.classList.remove('hidden');
+  } else {
+    sunIcon?.classList.remove('hidden');
+    moonIcon?.classList.add('hidden');
+    mobileSunIcon?.classList.remove('hidden');
+    mobileMoonIcon?.classList.add('hidden');
+  }
+}
+
+// Initialize theme on page load
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+  
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+  
+  updateThemeIcons(theme);
+}
+
+// Expose to global scope for HTML onclick
+window.toggleTheme = toggleTheme;
+
 // Show admin page
 function showAdminPage() {
   showAdmin = true;
@@ -149,6 +203,9 @@ console.log('✓ Navigation functions loaded and available globally');
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', async () => {
+  // Initialize theme first
+  initTheme();
+  
   // Set current year
   document.getElementById('current-year').textContent = new Date().getFullYear();
   
