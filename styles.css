@@ -2455,6 +2455,59 @@ html.dark .social-card {
     padding-right: 1.5rem;
   }
   
+
+/* ============================================
+   ADMIN MEDIA PREVIEW
+   ============================================ */
+.admin-media-preview {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 640px) {
+  .admin-media-preview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-media-preview {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.preview-item {
+  position: relative;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+html.dark .preview-item {
+  border-color: #334155;
+  background: #1e293b;
+}
+
+.preview-image,
+.preview-video {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.preview-type {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  background: rgba(17, 24, 39, 0.8);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
   .section-content {
     padding-left: 1.5rem;
     padding-right: 1.5rem;

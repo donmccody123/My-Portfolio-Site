@@ -126,6 +126,7 @@ function renderAdminDashboard() {
                 </p>
               </label>
             </div>
+                <div id="admin-media-preview" class="admin-media-preview"></div>
           </div>
 
           <div class="flex items-center gap-2">
@@ -309,6 +310,9 @@ export function handleAdminEdit(id) {
     fileLabel.querySelector('#admin-file-name').textContent = 'Click to replace media or drag and drop (optional)';
   }
 
+  // Show current media previews
+  renderAdminPreviewFromItem(item);
+
   const form = document.getElementById('admin-form');
   form.classList.remove('hidden');
 
@@ -488,19 +492,58 @@ function resetAdminForm() {
   if (fileSection) {
     fileSection.style.display = 'block';
   }
+  const preview = document.getElementById('admin-media-preview');
+  if (preview) preview.innerHTML = '';
   
   editingItemId = null;
 }
 
+// Render admin preview from existing item media
+function renderAdminPreviewFromItem(item) {
+  const preview = document.getElementById('admin-media-preview');
+  if (!preview || !item) return;
+  const gallery = Array.isArray(item.media_gallery) && item.media_gallery.length
+    ? item.media_gallery
+    : [{ url: item.media_url, type: item.media_type }];
+  const html = gallery.map((media) => `
+    <div class="preview-item">
+      ${media.type === 'video'
+        ? `<video src="${media.url}" class="preview-video" controls muted></video>`
+        : `<img src="${media.url}" class="preview-image" alt="Current media preview" />`
+      }
+      <span class="preview-type">${media.type === 'video' ? 'Video' : 'Image'}</span>
+    </div>
+  `).join('');
+  preview.innerHTML = html;
+}
+
 // Handle admin file change
 export function handleAdminFileChange(event) {
-  const file = event.target.files[0];
+  const files = Array.from(event.target.files || []);
   const fileName = document.getElementById('admin-file-name');
-  if (file) {
-    const count = event.target.files.length;
-    fileName.textContent = count === 1 ? file.name : `${file.name} (+${count - 1} more)`;
+  const preview = document.getElementById('admin-media-preview');
+
+  if (files.length > 0) {
+    fileName.textContent = files.length === 1 ? files[0].name : `${files[0].name} (+${files.length - 1} more)`;
+
+    // Render previews using object URLs
+    const html = files.map((file) => {
+      const url = URL.createObjectURL(file);
+      const isVideo = file.type.startsWith('video/');
+      return `
+        <div class="preview-item">
+          ${isVideo
+            ? `<video src="${url}" class="preview-video" controls muted></video>`
+            : `<img src="${url}" class="preview-image" alt="Selected media preview" />`
+          }
+          <span class="preview-type">${isVideo ? 'Video' : 'Image'}</span>
+        </div>
+      `;
+    }).join('');
+    preview.innerHTML = html;
   } else {
     fileName.textContent = 'Click to upload or drag and drop (multiple allowed)';
+    if (preview) preview.innerHTML = '';
   }
 }
 
