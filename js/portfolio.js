@@ -185,6 +185,12 @@ export function openPortfolioModal(item) {
   const modalPrev = document.getElementById('modal-prev');
   const modalNext = document.getElementById('modal-next');
 
+  // Guard against missing elements
+  if (!modal || !modalImage || !modalVideo || !modalTitle || !modalCategory || !modalDescription || !modalThumbs) {
+    console.error('Portfolio modal elements not found in DOM');
+    return;
+  }
+
   modalTitle.textContent = item.title;
   modalCategory.textContent = item.category;
   modalDescription.textContent = item.description;
