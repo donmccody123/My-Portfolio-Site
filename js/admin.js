@@ -397,6 +397,12 @@ export async function handleAdminSubmit(event) {
       };
 
       if (currentGallery && currentGallery.length > 0) {
+        // Validate all entries have URLs
+        const hasInvalidEntries = currentGallery.some(e => !e.url);
+        if (hasInvalidEntries) {
+          throw new Error('Some media files failed to upload. Please try again.');
+        }
+
         const primary = currentGallery[0];
         updatePayload.media_url = primary.url;
         updatePayload.media_type = primary.type;
@@ -418,7 +424,10 @@ export async function handleAdminSubmit(event) {
         .update(updatePayload)
         .eq('id', editingItemId);
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error('Database error:', dbError);
+        throw dbError;
+      }
 
       showMessage('success', 'Item updated successfully!');
       
@@ -431,7 +440,8 @@ export async function handleAdminSubmit(event) {
       await refreshPortfolio();
     } catch (error) {
       console.error('Error updating:', error);
-      showMessage('error', 'Failed to update item');
+      const errorMsg = error.message || 'Failed to update item';
+      showMessage('error', errorMsg);
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Update Item';
@@ -773,12 +783,13 @@ export function toggleAdminForm() {
   showForm = !showForm;
   const form = document.getElementById('admin-form');
   if (showForm) {
-    form.classList.remove('hidden');
-  } else {
-    form.classList.add('hidden');
+    // Reset form when opening for new item
     if (!editingItemId) {
       resetAdminForm();
     }
+    form.classList.remove('hidden');
+  } else {
+    form.classList.add('hidden');
   }
 }
 
