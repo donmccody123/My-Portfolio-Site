@@ -8,6 +8,7 @@ let showForm = false;
 let editingItemId = null;
 let selectedFiles = [];
 let dragSrcIndex = null;
+let currentGallery = [];
 
 // Initialize admin dashboard
 export function initAdmin() {
@@ -313,7 +314,20 @@ export function handleAdminEdit(id) {
   }
 
   // Show current media previews
-  renderAdminPreviewFromItem(item);
+  // Initialize current gallery state for reordering
+  currentGallery = (Array.isArray(item.media_gallery) && item.media_gallery.length)
+    ? item.media_gallery.map(entry => ({
+        url: entry.url,
+        type: entry.type,
+        path: entry.path || (entry.url ? entry.url.split('/').pop() : undefined)
+      }))
+    : [{
+        url: item.media_url,
+        type: item.media_type,
+        path: item.media_url ? item.media_url.split('/').pop() : undefined
+      }];
+
+  renderAdminPreviewFromItem();
 
   const form = document.getElementById('admin-form');
   form.classList.remove('hidden');
@@ -387,6 +401,12 @@ export async function handleAdminSubmit(event) {
         if (uniquePaths.length > 0) {
           await supabase.storage.from('portfolio-media').remove(uniquePaths);
         }
+      } else if (currentGallery && currentGallery.length > 0) {
+        // No new files selected; persist reordered gallery and primary
+        const primary = currentGallery[0];
+        updatePayload.media_url = primary.url;
+        updatePayload.media_type = primary.type;
+        updatePayload.media_gallery = currentGallery.map(e => ({ url: e.url, type: e.type, path: e.path }));
       }
 
       const { error: dbError } = await supabase
@@ -498,17 +518,20 @@ function resetAdminForm() {
   
   selectedFiles = [];
   editingItemId = null;
+  currentGallery = [];
 }
 
 // Render admin preview from existing item media
-function renderAdminPreviewFromItem(item) {
+function renderAdminPreviewFromItem() {
   const preview = document.getElementById('admin-media-preview');
-  if (!preview || !item) return;
-  const gallery = Array.isArray(item.media_gallery) && item.media_gallery.length
-    ? item.media_gallery
-    : [{ url: item.media_url, type: item.media_type }];
-  const html = gallery.map((media) => `
-    <div class="preview-item">
+  if (!preview) return;
+  const html = (currentGallery || []).map((media, idx) => `
+    <div class="preview-item" draggable="true"
+         ondragstart="window.handleCurrentDragStart(event, ${idx})"
+         ondragover="window.handleCurrentDragOver(event, ${idx})"
+         ondragleave="window.handleCurrentDragLeave(event, ${idx})"
+         ondrop="window.handleCurrentDrop(event, ${idx})"
+         ondragend="window.handleCurrentDragEnd(event)">
       ${media.type === 'video'
         ? `<video src="${media.url}" class="preview-video" controls muted></video>`
         : `<img src="${media.url}" class="preview-image" alt="Current media preview" />`
@@ -624,6 +647,49 @@ function handlePreviewDragEnd(e) {
   if (el) el.classList.remove('dragging');
 }
 
+// Drag-and-drop for current gallery reordering
+let currentDragSrcIndex = null;
+
+function handleCurrentDragStart(e, index) {
+  currentDragSrcIndex = index;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', String(index));
+  const el = e.currentTarget;
+  if (el) el.classList.add('dragging');
+}
+
+function handleCurrentDragOver(e, index) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const el = e.currentTarget;
+  if (el) el.classList.add('drag-over');
+}
+
+function handleCurrentDragLeave(e) {
+  const el = e.currentTarget;
+  if (el) el.classList.remove('drag-over');
+}
+
+function handleCurrentDrop(e, targetIndex) {
+  e.preventDefault();
+  const el = e.currentTarget;
+  if (el) el.classList.remove('drag-over');
+
+  const srcIndexStr = e.dataTransfer.getData('text/plain');
+  const srcIndex = currentDragSrcIndex != null ? currentDragSrcIndex : (srcIndexStr ? parseInt(srcIndexStr, 10) : null);
+  currentDragSrcIndex = null;
+  if (srcIndex == null || srcIndex === targetIndex) return;
+
+  const [entry] = currentGallery.splice(srcIndex, 1);
+  currentGallery.splice(targetIndex, 0, entry);
+  renderAdminPreviewFromItem();
+}
+
+function handleCurrentDragEnd(e) {
+  const el = e.currentTarget;
+  if (el) el.classList.remove('dragging');
+}
+
 // Handle admin delete
 export async function handleAdminDelete(id, mediaUrl) {
   if (!confirm('Are you sure you want to delete this item?')) return;
@@ -732,4 +798,9 @@ window.handlePreviewDragOver = handlePreviewDragOver;
 window.handlePreviewDragLeave = handlePreviewDragLeave;
 window.handlePreviewDrop = handlePreviewDrop;
 window.handlePreviewDragEnd = handlePreviewDragEnd;
+window.handleCurrentDragStart = handleCurrentDragStart;
+window.handleCurrentDragOver = handleCurrentDragOver;
+window.handleCurrentDragLeave = handleCurrentDragLeave;
+window.handleCurrentDrop = handleCurrentDrop;
+window.handleCurrentDragEnd = handleCurrentDragEnd;
 
