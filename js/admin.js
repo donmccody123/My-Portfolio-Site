@@ -9,6 +9,7 @@ let editingItemId = null;
 let selectedFiles = [];
 let dragSrcIndex = null;
 let currentGallery = [];
+let originalGalleryPaths = [];
 
 // Initialize admin dashboard
 export function initAdmin() {
@@ -327,6 +328,8 @@ export function handleAdminEdit(id) {
         path: item.media_url ? item.media_url.split('/').pop() : undefined
       }];
 
+  originalGalleryPaths = currentGallery.map(e => e.path).filter(Boolean);
+
   renderAdminPreviewFromItem();
 
   const form = document.getElementById('admin-form');
@@ -407,6 +410,16 @@ export async function handleAdminSubmit(event) {
         updatePayload.media_url = primary.url;
         updatePayload.media_type = primary.type;
         updatePayload.media_gallery = currentGallery.map(e => ({ url: e.url, type: e.type, path: e.path }));
+        // Determine removed files and delete from storage
+        const currentPaths = currentGallery.map(e => e.path).filter(Boolean);
+        const removedPaths = originalGalleryPaths.filter(p => !currentPaths.includes(p));
+        if (removedPaths.length > 0) {
+          try {
+            await supabase.storage.from('portfolio-media').remove(removedPaths);
+          } catch (remErr) {
+            console.warn('Failed to remove some files from storage:', remErr);
+          }
+        }
       }
 
       const { error: dbError } = await supabase
@@ -519,6 +532,7 @@ function resetAdminForm() {
   selectedFiles = [];
   editingItemId = null;
   currentGallery = [];
+  originalGalleryPaths = [];
 }
 
 // Render admin preview from existing item media
@@ -536,6 +550,9 @@ function renderAdminPreviewFromItem() {
         ? `<video src="${media.url}" class="preview-video" controls muted></video>`
         : `<img src="${media.url}" class="preview-image" alt="Current media preview" />`
       }
+      <div class="preview-actions">
+        <button class="preview-btn danger" title="Remove from gallery" onclick="event.stopPropagation(); window.removeCurrentMedia(${idx})">✕</button>
+      </div>
       <span class="preview-type">${media.type === 'video' ? 'Video' : 'Image'}</span>
     </div>
   `).join('');
@@ -690,6 +707,16 @@ function handleCurrentDragEnd(e) {
   if (el) el.classList.remove('dragging');
 }
 
+function removeCurrentMedia(index) {
+  if (!Array.isArray(currentGallery)) return;
+  if (currentGallery.length <= 1) {
+    showMessage('error', 'At least one media must remain.');
+    return;
+  }
+  currentGallery.splice(index, 1);
+  renderAdminPreviewFromItem();
+}
+
 // Handle admin delete
 export async function handleAdminDelete(id, mediaUrl) {
   if (!confirm('Are you sure you want to delete this item?')) return;
@@ -798,6 +825,7 @@ window.handlePreviewDragOver = handlePreviewDragOver;
 window.handlePreviewDragLeave = handlePreviewDragLeave;
 window.handlePreviewDrop = handlePreviewDrop;
 window.handlePreviewDragEnd = handlePreviewDragEnd;
+window.removeCurrentMedia = removeCurrentMedia;
 window.handleCurrentDragStart = handleCurrentDragStart;
 window.handleCurrentDragOver = handleCurrentDragOver;
 window.handleCurrentDragLeave = handleCurrentDragLeave;
