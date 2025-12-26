@@ -1687,6 +1687,47 @@ html.dark .portfolio-modal-content {
   object-fit: contain;
 }
 
+/* Slideshow arrow controls */
+.modal-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.modal-arrow:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.modal-arrow-prev {
+  left: 1rem;
+}
+
+.modal-arrow-next {
+  right: 1rem;
+}
+
+html.dark .modal-arrow {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+html.dark .modal-arrow:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
 .portfolio-modal-body {
   padding: 1.5rem;
 }

@@ -199,6 +199,18 @@
           <div id="modal-media-container" class="relative">
             <img id="modal-image" src="" alt="" class="portfolio-modal-image hidden">
             <video id="modal-video" src="" controls class="portfolio-modal-video hidden"></video>
+            
+            <!-- Prev/Next arrows for slideshow -->
+            <button id="modal-prev" onclick="event.stopPropagation(); window.modalPrevSlide()" class="modal-arrow modal-arrow-prev" style="display: none;" aria-label="Previous">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button id="modal-next" onclick="event.stopPropagation(); window.modalNextSlide()" class="modal-arrow modal-arrow-next" style="display: none;" aria-label="Next">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
           <div id="modal-thumbs" class="modal-thumbs hidden"></div>
           <div class="portfolio-modal-body">

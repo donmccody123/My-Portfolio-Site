@@ -360,24 +360,32 @@ export async function handleAdminSubmit(event) {
       const currentItem = items.find(i => i.id === editingItemId);
 
       // Upload any new files embedded in currentGallery (entries holding a File)
-      for (const entry of currentGallery) {
+      for (let i = 0; i < currentGallery.length; i++) {
+        const entry = currentGallery[i];
         if (entry.file) {
           const file = entry.file;
           const ext = file.name.split('.').pop();
           const name = `${Math.random().toString(36).substring(2)}-${Date.now()}.${ext}`;
           const path = `${name}`;
-          const { error: uploadError } = await supabase.storage
+          
+          const { error: uploadError, data: uploadData } = await supabase.storage
             .from('portfolio-media')
             .upload(path, file);
-          if (uploadError) throw uploadError;
+          
+          if (uploadError) {
+            console.error('Upload error:', uploadError);
+            throw uploadError;
+          }
+          
           const { data: { publicUrl } } = supabase.storage
             .from('portfolio-media')
             .getPublicUrl(path);
+          
           entry.url = publicUrl;
           entry.type = file.type.startsWith('video/') ? 'video' : 'image';
           entry.path = path;
-          entry.isNew = false;
           delete entry.file;
+          delete entry.isNew;
         }
       }
 

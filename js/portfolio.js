@@ -169,6 +169,10 @@ function checkExpansionNeeded() {
   }
 }
 
+// Modal state
+let currentModalGallery = [];
+let currentModalIndex = 0;
+
 // Open portfolio modal
 export function openPortfolioModal(item) {
   const modal = document.getElementById('portfolio-modal');
@@ -178,18 +182,24 @@ export function openPortfolioModal(item) {
   const modalCategory = document.getElementById('modal-category');
   const modalDescription = document.getElementById('modal-description');
   const modalThumbs = document.getElementById('modal-thumbs');
+  const modalPrev = document.getElementById('modal-prev');
+  const modalNext = document.getElementById('modal-next');
 
   modalTitle.textContent = item.title;
   modalCategory.textContent = item.category;
   modalDescription.textContent = item.description;
 
-  const gallery = Array.isArray(item.media_gallery) && item.media_gallery.length
+  currentModalGallery = Array.isArray(item.media_gallery) && item.media_gallery.length
     ? item.media_gallery
     : [{ url: item.media_url, type: item.media_type }];
+  currentModalIndex = 0;
 
   function setActiveMedia(index) {
-    const media = gallery[index];
+    if (index < 0 || index >= currentModalGallery.length) return;
+    currentModalIndex = index;
+    const media = currentModalGallery[index];
     if (!media) return;
+    
     if (media.type === 'image') {
       modalImage.src = media.url;
       modalImage.alt = item.title;
@@ -202,6 +212,12 @@ export function openPortfolioModal(item) {
       modalImage.classList.add('hidden');
     }
 
+    // Update arrow visibility
+    if (modalPrev && modalNext) {
+      modalPrev.style.display = currentModalGallery.length > 1 ? 'flex' : 'none';
+      modalNext.style.display = currentModalGallery.length > 1 ? 'flex' : 'none';
+    }
+
     // highlight active thumb
     const thumbNodes = modalThumbs.querySelectorAll('.modal-thumb');
     thumbNodes.forEach((node, idx) => {
@@ -211,9 +227,9 @@ export function openPortfolioModal(item) {
   }
 
   // Build thumbnails
-  if (gallery.length > 1) {
+  if (currentModalGallery.length > 1) {
     modalThumbs.classList.remove('hidden');
-    modalThumbs.innerHTML = gallery.map((media, idx) => `
+    modalThumbs.innerHTML = currentModalGallery.map((media, idx) => `
       <button class="modal-thumb ${idx === 0 ? 'active' : ''}" data-idx="${idx}" onclick="event.stopPropagation(); window.setModalMedia(${idx})">
         ${media.type === 'image'
           ? `<img src="${media.url}" alt="${item.title} thumb ${idx + 1}" />`
@@ -226,15 +242,51 @@ export function openPortfolioModal(item) {
   }
 
   window.setModalMedia = (idx) => setActiveMedia(idx);
+  window.modalPrevSlide = () => {
+    const newIndex = (currentModalIndex - 1 + currentModalGallery.length) % currentModalGallery.length;
+    setActiveMedia(newIndex);
+  };
+  window.modalNextSlide = () => {
+    const newIndex = (currentModalIndex + 1) % currentModalGallery.length;
+    setActiveMedia(newIndex);
+  };
 
   setActiveMedia(0);
   modal.classList.remove('hidden');
+
+  // Add keyboard navigation
+  document.addEventListener('keydown', handleModalKeyboard);
+}
+
+function handleModalKeyboard(e) {
+  const modal = document.getElementById('portfolio-modal');
+  if (modal.classList.contains('hidden')) return;
+  
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    window.modalPrevSlide();
+  } else if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    window.modalNextSlide();
+  } else if (e.key === 'Escape') {
+    e.preventDefault();
+    closePortfolioModal();
+  }
 }
 
 // Close portfolio modal
 export function closePortfolioModal() {
   const modal = document.getElementById('portfolio-modal');
+  const modalVideo = document.getElementById('modal-video');
+  
   modal.classList.add('hidden');
+  if (modalVideo) modalVideo.pause();
+  
+  // Remove keyboard listener
+  document.removeEventListener('keydown', handleModalKeyboard);
+  
+  currentModalGallery = [];
+  currentModalIndex = 0;
 }
 
 // Refresh portfolio (for admin after adding/deleting)
