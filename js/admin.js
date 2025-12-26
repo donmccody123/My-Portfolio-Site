@@ -350,7 +350,7 @@ export async function handleAdminSubmit(event) {
   const fileInput = document.getElementById('admin-file');
   const submitBtn = document.getElementById('admin-submit');
 
-  // If editing, optionally allow media replacement
+  // If editing, allow media addition and reorder/removal without replacing existing unless removed
   if (editingItemId) {
     // Update existing item
     submitBtn.disabled = true;
@@ -359,17 +359,10 @@ export async function handleAdminSubmit(event) {
     try {
       const currentItem = items.find(i => i.id === editingItemId);
 
-      let updatePayload = {
-        title,
-        description,
-        category,
-        is_featured: isFeatured,
-      };
-
-      if (selectedFiles && selectedFiles.length > 0) {
-        // Upload new files and replace media
-        const uploads = [];
-        for (const file of selectedFiles) {
+      // Upload any new files embedded in currentGallery (entries holding a File)
+      for (const entry of currentGallery) {
+        if (entry.file) {
+          const file = entry.file;
           const ext = file.name.split('.').pop();
           const name = `${Math.random().toString(36).substring(2)}-${Date.now()}.${ext}`;
           const path = `${name}`;
@@ -380,37 +373,27 @@ export async function handleAdminSubmit(event) {
           const { data: { publicUrl } } = supabase.storage
             .from('portfolio-media')
             .getPublicUrl(path);
-          uploads.push({ url: publicUrl, type: file.type.startsWith('video/') ? 'video' : 'image', path });
+          entry.url = publicUrl;
+          entry.type = file.type.startsWith('video/') ? 'video' : 'image';
+          entry.path = path;
+          entry.isNew = false;
+          delete entry.file;
         }
+      }
 
-        const primary = uploads[0];
-        const gallery = uploads.map(u => ({ url: u.url, type: u.type, path: u.path }));
+      let updatePayload = {
+        title,
+        description,
+        category,
+        is_featured: isFeatured,
+      };
 
-        updatePayload.media_url = primary.url;
-        updatePayload.media_type = primary.type;
-        updatePayload.media_gallery = gallery;
-
-        // Remove old media files from storage (primary + gallery)
-        const paths = [];
-        const primaryPath = currentItem.media_url?.split('/').pop();
-        if (primaryPath) paths.push(primaryPath);
-        if (Array.isArray(currentItem.media_gallery)) {
-          currentItem.media_gallery.forEach(entry => {
-            const p = entry?.url?.split('/').pop();
-            if (p) paths.push(p);
-          });
-        }
-        const uniquePaths = [...new Set(paths)];
-        if (uniquePaths.length > 0) {
-          await supabase.storage.from('portfolio-media').remove(uniquePaths);
-        }
-      } else if (currentGallery && currentGallery.length > 0) {
-        // No new files selected; persist reordered gallery and primary
+      if (currentGallery && currentGallery.length > 0) {
         const primary = currentGallery[0];
         updatePayload.media_url = primary.url;
         updatePayload.media_type = primary.type;
         updatePayload.media_gallery = currentGallery.map(e => ({ url: e.url, type: e.type, path: e.path }));
-        // Determine removed files and delete from storage
+
         const currentPaths = currentGallery.map(e => e.path).filter(Boolean);
         const removedPaths = originalGalleryPaths.filter(p => !currentPaths.includes(p));
         if (removedPaths.length > 0) {
@@ -532,7 +515,7 @@ function resetAdminForm() {
   selectedFiles = [];
   editingItemId = null;
   currentGallery = [];
-  originalGalleryPaths = [];
+    originalGalleryPaths = [];
 }
 
 // Render admin preview from existing item media
@@ -561,7 +544,28 @@ function renderAdminPreviewFromItem() {
 
 // Handle admin file change
 export function handleAdminFileChange(event) {
-  selectedFiles = Array.from(event.target.files || []);
+  const files = Array.from(event.target.files || []);
+
+  // If editing, append new files to current gallery instead of replacing
+  if (editingItemId) {
+    files.forEach((file) => {
+      const url = URL.createObjectURL(file);
+      currentGallery.push({
+        url,
+        type: file.type.startsWith('video/') ? 'video' : 'image',
+        path: null,
+        file,
+        isNew: true,
+      });
+    });
+    renderAdminPreviewFromItem();
+    // Clear input so the same file can be selected again if needed
+    event.target.value = '';
+    return;
+  }
+
+  // Create mode: maintain existing selectedFiles flow
+  selectedFiles = files;
   renderSelectedPreviews();
 }
 
@@ -825,6 +829,7 @@ window.handlePreviewDragOver = handlePreviewDragOver;
 window.handlePreviewDragLeave = handlePreviewDragLeave;
 window.handlePreviewDrop = handlePreviewDrop;
 window.handlePreviewDragEnd = handlePreviewDragEnd;
+window.removeCurrentMedia = removeCurrentMedia;
 window.removeCurrentMedia = removeCurrentMedia;
 window.handleCurrentDragStart = handleCurrentDragStart;
 window.handleCurrentDragOver = handleCurrentDragOver;
