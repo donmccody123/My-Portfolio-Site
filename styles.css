@@ -1657,12 +1657,18 @@ html.dark .portfolio-item-description {
   width: 100%;
   max-height: 90vh;
   transition: background-color 0.3s ease;
+  overflow: auto;
 }
 
 html.dark .portfolio-modal-content {
   background-color: #1e293b;
 }
-  overflow: auto;
+/* Responsive modal width */
+@media (max-width: 768px) {
+  .portfolio-modal-content {
+    max-width: 95vw;
+  }
+}
 }
 
 .portfolio-modal-image {
@@ -1674,6 +1680,7 @@ html.dark .portfolio-modal-content {
 .portfolio-modal-video {
   width: 100%;
   max-height: 60vh;
+  object-fit: contain;
 }
 
 .portfolio-modal-body {
@@ -2412,6 +2419,16 @@ html.dark .social-card {
 .btn-edit:hover {
   color: #1d4ed8;
   transform: scale(1.2);
+}
+
+.btn-edit-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.btn-edit svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* ============================================
