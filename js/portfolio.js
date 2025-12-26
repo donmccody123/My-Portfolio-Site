@@ -136,6 +136,36 @@ function renderPortfolio() {
       </div>
     </div>
   `).join('');
+
+  // Check if expansion button should be shown
+  checkExpansionNeeded();
+}
+
+// Check if portfolio container needs expansion button
+function checkExpansionNeeded() {
+  const container = document.getElementById('portfolio-container');
+  const expandBtn = document.getElementById('portfolio-expand-btn');
+  const portfolioEmpty = document.getElementById('portfolio-empty');
+  
+  // Show button only if there are items and container height exceeds the limit
+  if (portfolioEmpty.classList.contains('hidden') && container) {
+    // Reset container to collapsed state first
+    container.classList.remove('expanded');
+    
+    // Small delay to allow DOM to update
+    setTimeout(() => {
+      const containerHeight = container.scrollHeight;
+      const maxHeight = 800; // Should match CSS max-height
+      
+      if (containerHeight > maxHeight) {
+        expandBtn.classList.remove('hidden');
+      } else {
+        expandBtn.classList.add('hidden');
+      }
+    }, 50);
+  } else {
+    expandBtn.classList.add('hidden');
+  }
 }
 
 // Open portfolio modal

@@ -42,6 +42,23 @@ function toggleMobileMenu() {
   }
 }
 
+// Toggle portfolio expansion
+function togglePortfolioExpand() {
+  const container = document.getElementById('portfolio-container');
+  const btn = document.getElementById('portfolio-expand-btn');
+  const btnText = document.getElementById('expand-btn-text');
+  
+  const isExpanded = container.classList.contains('expanded');
+  
+  if (isExpanded) {
+    container.classList.remove('expanded');
+    btnText.textContent = 'Show More';
+  } else {
+    container.classList.add('expanded');
+    btnText.textContent = 'Show Less';
+  }
+}
+
 // Show admin page
 function showAdminPage() {
   showAdmin = true;
