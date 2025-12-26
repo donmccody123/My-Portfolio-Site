@@ -1363,7 +1363,7 @@ section {
 }
 
 .portfolio-container.expanded {
-  max-height: none;
+  max-height: 10000px;
 }
 
 .portfolio-fade {

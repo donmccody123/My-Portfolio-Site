@@ -48,14 +48,22 @@ function togglePortfolioExpand() {
   const btn = document.getElementById('portfolio-expand-btn');
   const btnText = document.getElementById('expand-btn-text');
   
+  if (!container) {
+    console.error('portfolio-container not found');
+    return;
+  }
+  
   const isExpanded = container.classList.contains('expanded');
+  console.log('Current expanded state:', isExpanded);
   
   if (isExpanded) {
     container.classList.remove('expanded');
     btnText.textContent = 'Show More';
+    console.log('Collapsed');
   } else {
     container.classList.add('expanded');
     btnText.textContent = 'Show Less';
+    console.log('Expanded');
   }
 }
 
