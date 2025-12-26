@@ -105,7 +105,7 @@ function renderAdminDashboard() {
               <label class="form-label">
                 Upload Files (Images or Videos)
               </label>
-            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-600 transition-colors">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-600 transition-colors">
               <input
                 type="file"
                 id="admin-file"
@@ -114,7 +114,7 @@ function renderAdminDashboard() {
                 accept="image/*,video/*"
                 class="hidden"
               />
-              <label for="admin-file" class="cursor-pointer">
+                  <label for="admin-file" id="admin-file-label" class="cursor-pointer">
                 <svg class="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
@@ -264,11 +264,12 @@ function renderAdminItems() {
             </button>
             <button
               onclick="handleAdminDelete('${item.id}', '${item.media_url}')"
-              class="btn-delete"
+              class="btn-delete flex items-center gap-1"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
+              <span class="btn-delete-label">Delete</span>
             </button>
           </div>
         </div>
@@ -298,11 +299,14 @@ export function handleAdminEdit(id) {
   document.getElementById('admin-featured').checked = item.is_featured || false;
   document.getElementById('form-title').textContent = 'Edit Portfolio Item';
   document.getElementById('submit-btn-text').textContent = 'Update Item';
-
-  // Hide file input section when editing
+  // Show file input section for optional media replacement
   const fileSection = document.getElementById('admin-file').closest('.form-group');
+  const fileLabel = document.getElementById('admin-file-label');
   if (fileSection) {
-    fileSection.style.display = 'none';
+    fileSection.style.display = 'block';
+  }
+  if (fileLabel) {
+    fileLabel.querySelector('#admin-file-name').textContent = 'Click to replace media or drag and drop (optional)';
   }
 
   const form = document.getElementById('admin-form');
@@ -323,21 +327,66 @@ export async function handleAdminSubmit(event) {
   const fileInput = document.getElementById('admin-file');
   const submitBtn = document.getElementById('admin-submit');
 
-  // If editing, we don't require new files
+  // If editing, optionally allow media replacement
   if (editingItemId) {
     // Update existing item
     submitBtn.disabled = true;
     submitBtn.textContent = 'Updating...';
 
     try {
+      const currentItem = items.find(i => i.id === editingItemId);
+
+      let updatePayload = {
+        title,
+        description,
+        category,
+        is_featured: isFeatured,
+      };
+
+      if (fileInput.files && fileInput.files.length > 0) {
+        // Upload new files and replace media
+        const uploads = [];
+        const files = Array.from(fileInput.files);
+        for (const file of files) {
+          const ext = file.name.split('.').pop();
+          const name = `${Math.random().toString(36).substring(2)}-${Date.now()}.${ext}`;
+          const path = `${name}`;
+          const { error: uploadError } = await supabase.storage
+            .from('portfolio-media')
+            .upload(path, file);
+          if (uploadError) throw uploadError;
+          const { data: { publicUrl } } = supabase.storage
+            .from('portfolio-media')
+            .getPublicUrl(path);
+          uploads.push({ url: publicUrl, type: file.type.startsWith('video/') ? 'video' : 'image', path });
+        }
+
+        const primary = uploads[0];
+        const gallery = uploads.map(u => ({ url: u.url, type: u.type, path: u.path }));
+
+        updatePayload.media_url = primary.url;
+        updatePayload.media_type = primary.type;
+        updatePayload.media_gallery = gallery;
+
+        // Remove old media files from storage (primary + gallery)
+        const paths = [];
+        const primaryPath = currentItem.media_url?.split('/').pop();
+        if (primaryPath) paths.push(primaryPath);
+        if (Array.isArray(currentItem.media_gallery)) {
+          currentItem.media_gallery.forEach(entry => {
+            const p = entry?.url?.split('/').pop();
+            if (p) paths.push(p);
+          });
+        }
+        const uniquePaths = [...new Set(paths)];
+        if (uniquePaths.length > 0) {
+          await supabase.storage.from('portfolio-media').remove(uniquePaths);
+        }
+      }
+
       const { error: dbError } = await supabase
         .from('portfolio_items')
-        .update({
-          title,
-          description,
-          category,
-          is_featured: isFeatured,
-        })
+        .update(updatePayload)
         .eq('id', editingItemId);
 
       if (dbError) throw dbError;

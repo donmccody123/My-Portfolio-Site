@@ -1653,33 +1653,37 @@ html.dark .portfolio-item-description {
 .portfolio-modal-content {
   background-color: #ffffff;
   border-radius: 0.75rem;
-  max-width: 56rem;
-  width: 100%;
-  max-height: 90vh;
+  max-width: 95vw;
+  width: auto;
+  max-height: 95vh;
   transition: background-color 0.3s ease;
-  overflow: auto;
+  overflow: hidden;
 }
 
 html.dark .portfolio-modal-content {
   background-color: #1e293b;
 }
 /* Responsive modal width */
+/* Ensure modal fits viewport without scroll */
 @media (max-width: 768px) {
   .portfolio-modal-content {
     max-width: 95vw;
+    max-height: 95vh;
   }
 }
-}
+
 
 .portfolio-modal-image {
-  width: 100%;
-  max-height: 60vh;
+  width: auto;
+  max-width: 95vw;
+  max-height: 85vh;
   object-fit: contain;
 }
 
 .portfolio-modal-video {
-  width: 100%;
-  max-height: 60vh;
+  width: auto;
+  max-width: 95vw;
+  max-height: 85vh;
   object-fit: contain;
 }
 
@@ -2405,6 +2409,16 @@ html.dark .social-card {
 .btn-delete:hover {
   color: #b91c1c;
   transform: scale(1.2);
+}
+
+.btn-delete-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.btn-delete svg {
+  width: 20px;
+  height: 20px;
 }
 
 .btn-edit {
