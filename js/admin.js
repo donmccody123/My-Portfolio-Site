@@ -513,19 +513,30 @@ export async function handleAdminSubmit(event) {
 
 // Reset admin form
 function resetAdminForm() {
-  document.getElementById('admin-title').value = '';
-  document.getElementById('admin-description').value = '';
-  document.getElementById('admin-category').value = 'Flyers';
-  document.getElementById('admin-featured').checked = false;
-  document.getElementById('admin-file').value = '';
-  document.getElementById('admin-file-name').textContent = 'Click to upload or drag and drop (multiple allowed)';
-  document.getElementById('form-title').textContent = 'Add New Portfolio Item';
-  document.getElementById('submit-btn-text').textContent = 'Upload Item';
+  const titleEl = document.getElementById('admin-title');
+  const descEl = document.getElementById('admin-description');
+  const categoryEl = document.getElementById('admin-category');
+  const featuredEl = document.getElementById('admin-featured');
+  const fileEl = document.getElementById('admin-file');
+  const fileNameEl = document.getElementById('admin-file-name');
+  const formTitleEl = document.getElementById('form-title');
+  const submitBtnTextEl = document.getElementById('submit-btn-text');
+  
+  if (titleEl) titleEl.value = '';
+  if (descEl) descEl.value = '';
+  if (categoryEl) categoryEl.value = 'Flyers';
+  if (featuredEl) featuredEl.checked = false;
+  if (fileEl) fileEl.value = '';
+  if (fileNameEl) fileNameEl.textContent = 'Click to upload or drag and drop (multiple allowed)';
+  if (formTitleEl) formTitleEl.textContent = 'Add New Portfolio Item';
+  if (submitBtnTextEl) submitBtnTextEl.textContent = 'Upload Item';
   
   // Show file input section again
-  const fileSection = document.getElementById('admin-file').closest('.form-group');
-  if (fileSection) {
-    fileSection.style.display = 'block';
+  if (fileEl) {
+    const fileSection = fileEl.closest('.form-group');
+    if (fileSection) {
+      fileSection.style.display = 'block';
+    }
   }
   const preview = document.getElementById('admin-media-preview');
   if (preview) preview.innerHTML = '';
@@ -533,7 +544,7 @@ function resetAdminForm() {
   selectedFiles = [];
   editingItemId = null;
   currentGallery = [];
-    originalGalleryPaths = [];
+  originalGalleryPaths = [];
 }
 
 // Render admin preview from existing item media
