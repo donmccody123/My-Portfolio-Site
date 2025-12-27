@@ -431,10 +431,14 @@ export async function handleAdminSubmit(event) {
 
       showMessage('success', 'Item updated successfully!');
       
-      // Reset form
-      resetAdminForm();
+      // Reset state first, then form
       editingItemId = null;
-      toggleAdminForm();
+      showForm = false;
+      resetAdminForm();
+      
+      // Hide form
+      const form = document.getElementById('admin-form');
+      if (form) form.classList.add('hidden');
       
       await fetchItems();
       await refreshPortfolio();
@@ -541,8 +545,8 @@ function resetAdminForm() {
   const preview = document.getElementById('admin-media-preview');
   if (preview) preview.innerHTML = '';
   
+  // Clear all state variables
   selectedFiles = [];
-  editingItemId = null;
   currentGallery = [];
   originalGalleryPaths = [];
 }
@@ -606,7 +610,9 @@ function renderSelectedPreviews() {
   if (!preview || !fileInput) return;
 
   if (selectedFiles.length > 0) {
-    fileName.textContent = selectedFiles.length === 1 ? selectedFiles[0].name : `${selectedFiles[0].name} (+${selectedFiles.length - 1} more)`;
+    if (fileName) {
+      fileName.textContent = selectedFiles.length === 1 ? selectedFiles[0].name : `${selectedFiles[0].name} (+${selectedFiles.length - 1} more)`;
+    }
 
     const html = selectedFiles.map((file, idx) => {
       const url = URL.createObjectURL(file);
@@ -637,7 +643,9 @@ function renderSelectedPreviews() {
     selectedFiles.forEach(f => dt.items.add(f));
     fileInput.files = dt.files;
   } else {
-    fileName.textContent = 'Click to upload or drag and drop (multiple allowed)';
+    if (fileName) {
+      fileName.textContent = 'Click to upload or drag and drop (multiple allowed)';
+    }
     preview.innerHTML = '';
     const dt = new DataTransfer();
     fileInput.files = dt.files;
