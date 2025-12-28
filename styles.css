@@ -19,6 +19,21 @@ html.dark {
   color-scheme: dark;
 }
 
+/* Global invert approach to swap the palette in dark mode while leaving media assets untouched */
+html.dark {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Revert inversion for media so images/videos/logos stay natural */
+html.dark img,
+html.dark video,
+html.dark picture,
+html.dark canvas,
+html.dark iframe,
+html.dark .no-invert {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 body {
   margin: 0;
   padding: 0;
