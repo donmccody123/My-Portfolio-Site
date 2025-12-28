@@ -92,17 +92,23 @@ function updateThemeIcons(theme) {
   const moonIcon = document.getElementById('moon-icon');
   const mobileSunIcon = document.getElementById('mobile-sun-icon');
   const mobileMoonIcon = document.getElementById('mobile-moon-icon');
+  const mobileMenuSunIcon = document.getElementById('mobile-menu-sun-icon');
+  const mobileMenuMoonIcon = document.getElementById('mobile-menu-moon-icon');
   
   if (theme === 'dark') {
     sunIcon?.classList.add('hidden');
     moonIcon?.classList.remove('hidden');
     mobileSunIcon?.classList.add('hidden');
     mobileMoonIcon?.classList.remove('hidden');
+    mobileMenuSunIcon?.classList.add('hidden');
+    mobileMenuMoonIcon?.classList.remove('hidden');
   } else {
     sunIcon?.classList.remove('hidden');
     moonIcon?.classList.add('hidden');
     mobileSunIcon?.classList.remove('hidden');
     mobileMoonIcon?.classList.add('hidden');
+    mobileMenuSunIcon?.classList.remove('hidden');
+    mobileMenuMoonIcon?.classList.add('hidden');
   }
 }
 
